@@ -4,13 +4,15 @@ tetris written in go
 
 ## Controls:
 
-S - Start
-Q - Quit
-← - Move left
-→ - Move right
-↑ - Rotate
-↓ - Soft drop
-Space - Hard drop
+| #   | Key   | Action     |
+| --- | ----- | ---------- |
+| 1   | S     | Start      |
+| 2   | Q     | Quit       |
+| 3   | ←     | Move left  |
+| 4   | →     | Move right |
+| 5   | ↑     | Rotate     |
+| 6   | ↓     | Soft drop  |
+| 7   | Space | Hard drop  |
 
 ## Sceenshots
 
