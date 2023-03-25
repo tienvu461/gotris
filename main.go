@@ -36,13 +36,12 @@ func main() {
 	for game.GetState() != tetris.G_OVER {
 		select {
 		case ev := <-eventQueue:
-			if ev.Type == termbox.EventKey {
+			if ev.Type == termbox.EventKey && game.GetState() == tetris.G_PLAY {
 				switch {
 				case ev.Key == termbox.KeyArrowUp:
 					game.Rotate()
 				case ev.Key == termbox.KeyArrowDown:
 					game.SpeedUp()
-					// game.MoveDown()
 				case ev.Key == termbox.KeyArrowLeft:
 					game.MoveLeft()
 				case ev.Key == termbox.KeyArrowRight:
@@ -52,9 +51,17 @@ func main() {
 				case ev.Ch == 'q':
 					// quit
 					return
+				default:
+					return
+				}
+			} else {
+				switch {
 				case ev.Ch == 's':
 					//start
 					game.Start()
+				case ev.Ch == 'q':
+					// quit
+					return
 				default:
 					return
 				}

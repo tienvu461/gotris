@@ -91,13 +91,13 @@ var blocks = []block{
 	},
 	// 3. Z Block - Cleverland Z
 	{
-		shape:     []vector{{0, 0}, {0, -1}, {-1, 0}, {-1, 1}},
+		shape:     []vector{{-1, -1}, {-1, 0}, {0, 0}, {0, 1}},
 		color:     3,
 		canRotate: true,
 	},
 	// 4. S block - Rhode Island Z
 	{
-		shape:     []vector{{1, -1}, {1, 0}, {0, 0}, {0, 1}},
+		shape:     []vector{{0, 0}, {0, -1}, {-1, 0}, {-1, 1}},
 		color:     4,
 		canRotate: true,
 	},

@@ -22,7 +22,7 @@ var colors = []termbox.Attribute{
 	termbox.ColorYellow,
 	termbox.ColorWhite,
 	termbox.ColorMagenta,
-	termbox.ColorLightGray,
+	termbox.ColorGreen,
 	termbox.ColorRed,
 }
 
