@@ -18,13 +18,13 @@ type block struct {
 }
 
 func (b *block) rotateBack() {
-	var rotateAngle (float64) = 270
+	var rotateAngle (float64) = 90
 	rotateRadian := rotateAngle * math.Pi / 180
 	b.rotateWithRad(rotateRadian)
 }
 
 func (b *block) rotate() {
-	var rotateAngle (float64) = 90
+	var rotateAngle (float64) = 270
 	rotateRadian := rotateAngle * math.Pi / 180
 	b.rotateWithRad(rotateRadian)
 }
@@ -44,6 +44,28 @@ func (b *block) rotateWithRad(rad float64) {
 	}
 }
 
+func (b *block) ShapeMinMax() (int, int, int, int) {
+	var xmax int = b.shape[0].x
+	var xmin int = b.shape[0].x
+	var ymax int = b.shape[0].y
+	var ymin int = b.shape[0].y
+	for _, value := range b.shape {
+		if xmax < value.x {
+			xmax = value.x
+		}
+		if xmin > value.x {
+			xmin = value.x
+		}
+		if ymax < value.y {
+			ymax = value.y
+		}
+		if ymin > value.y {
+			ymin = value.y
+		}
+	}
+	return ymin, ymax, xmin, xmax
+}
+
 // https://qph.cf2.quoracdn.net/main-qimg-356e2b21c801381db2890dab49a9ea88
 var blocks = []block{
 	{
@@ -52,20 +74,24 @@ var blocks = []block{
 		canRotate: false,
 	},
 	// 1. L block - Orange Ricky
+	//    X
+	// XXXX
 	{
-		shape:     []vector{{0, 1}, {1, 1}, {1, 0}, {1, -1}},
+		shape:     []vector{{0, 0}, {0, -1}, {0, 1}, {-1, 1}},
 		color:     1,
 		canRotate: true,
 	},
 	// 2. Oposite L block - Blue Ricky
+	// X
+	// XXXX
 	{
-		shape:     []vector{{0, -1}, {1, -1}, {1, 0}, {1, 1}},
+		shape:     []vector{{0, 0}, {0, -1}, {0, 1}, {-1, -1}},
 		color:     2,
 		canRotate: true,
 	},
 	// 3. Z Block - Cleverland Z
 	{
-		shape:     []vector{{0, -1}, {0, 0}, {1, 0}, {1, 1}},
+		shape:     []vector{{0, 0}, {0, -1}, {-1, 0}, {-1, 1}},
 		color:     3,
 		canRotate: true,
 	},
@@ -83,7 +109,7 @@ var blocks = []block{
 	},
 	// 6. Upsidedown T Block - Teewee
 	{
-		shape:     []vector{{1, -1}, {0, 0}, {1, 0}, {1, 1}},
+		shape:     []vector{{0, 0}, {-1, 0}, {0, -1}, {0, 1}},
 		color:     6,
 		canRotate: true,
 	},
@@ -97,5 +123,10 @@ var blocks = []block{
 
 func randBlock() block {
 	idx := rand.Intn(len(blocks)-1) + 1
-	return blocks[idx]
+	blk := blocks[idx]
+	return block{
+		shape:     append([]vector(nil), blk.shape...),
+		canRotate: blk.canRotate,
+		color:     blk.color,
+	}
 }

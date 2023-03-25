@@ -4,6 +4,7 @@ Copyright © 2023 tienvu461@gmail.com
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -15,7 +16,7 @@ import (
 const FPS = 60 * time.Millisecond
 
 func main() {
-	rand.New(rand.NewSource(time.Now().Unix()))
+	rand.Seed(time.Now().UnixNano())
 	err := termbox.Init()
 	if err != nil {
 		panic(err)
@@ -41,6 +42,7 @@ func main() {
 					game.Rotate()
 				case ev.Key == termbox.KeyArrowDown:
 					game.SpeedUp()
+					// game.MoveDown()
 				case ev.Key == termbox.KeyArrowLeft:
 					game.MoveLeft()
 				case ev.Key == termbox.KeyArrowRight:
@@ -59,6 +61,7 @@ func main() {
 			}
 		case <-ticker.C:
 			screen.Render(game.GetBoard())
+			screen.Logtb(fmt.Sprintf("Score: %d\n", game.GetScore()))
 			ticker.Reset(FPS)
 		case <-game.FallSpeed.C:
 			game.GameLoop()

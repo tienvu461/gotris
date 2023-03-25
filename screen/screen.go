@@ -7,10 +7,12 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/mattn/go-runewidth"
 	"github.com/nsf/termbox-go"
 )
 
 type screen struct {
+	logMsg string
 }
 
 var colors = []termbox.Attribute{
@@ -22,6 +24,22 @@ var colors = []termbox.Attribute{
 	termbox.ColorMagenta,
 	termbox.ColorLightGray,
 	termbox.ColorRed,
+}
+
+func (s *screen) Logtb(msg string) {
+	s.logMsg = msg
+}
+
+func tbprint(msg string) {
+	w, h := termbox.Size()
+	midy := h / 2
+	midx := (w - 30) / 2
+	fg := colors[0]
+	bg := colors[4]
+	for _, c := range msg {
+		termbox.SetCell(midx, midy, c, fg, bg)
+		midx += runewidth.RuneWidth(c)
+	}
 }
 
 func (s *screen) RenderAsciiBoard(board [][]int) {
@@ -48,6 +66,9 @@ func (s *screen) Render(board [][]int) {
 				termbox.SetCell((x+offset)*cellWidth+i, y+offset, ' ', colors[num], colors[num])
 			}
 		}
+	}
+	if s.logMsg != "" {
+		tbprint(s.logMsg)
 	}
 	termbox.Flush()
 }

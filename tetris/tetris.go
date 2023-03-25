@@ -3,7 +3,10 @@ Copyright © 2023 tienvu461@gmail.com
 */
 package tetris
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 const B_HEIGHT = 20
 const B_WIDTH = 15
@@ -21,12 +24,17 @@ type game struct {
 	position  vector
 	block     block
 	state     gameState
+	score     int
 	FallSpeed *time.Timer
 }
 
 func (g *game) genBlock() {
 	g.block = randBlock()
 	g.position = vector{1, B_WIDTH / 2}
+}
+
+func (g *game) GetScore() int {
+	return g.score
 }
 
 func (g *game) resetFallSpeed() {
@@ -45,7 +53,7 @@ func (g *game) colision() bool {
 		if pos.x < 0 || pos.x >= B_WIDTH {
 			return true
 		}
-		if pos.y >= B_HEIGHT {
+		if pos.y < 0 || pos.y >= B_HEIGHT {
 			return true
 		}
 		if g.board[pos.y][pos.x] > 0 {
@@ -66,12 +74,36 @@ func (g *game) moveIfPosible(v vector) bool {
 	return true
 }
 
-func (g *game) MoveLeft() {
-	g.moveIfPosible(vector{0, -1})
+func (g *game) MoveLeft(unit ...int) {
+	default_unit := 1
+	if len(unit) > 0 {
+		default_unit = unit[0]
+	}
+	g.moveIfPosible(vector{0, -(default_unit)})
 }
 
-func (g *game) MoveRight() {
-	g.moveIfPosible(vector{0, 1})
+func (g *game) MoveRight(unit ...int) {
+	default_unit := 1
+	if len(unit) > 0 {
+		default_unit = unit[0]
+	}
+	g.moveIfPosible(vector{0, default_unit})
+}
+
+func (g *game) MoveDown(unit ...int) {
+	default_unit := 1
+	if len(unit) > 0 {
+		default_unit = unit[0]
+	}
+	g.moveIfPosible(vector{default_unit, 0})
+}
+
+func (g *game) MoveUp(unit ...int) {
+	default_unit := 1
+	if len(unit) > 0 {
+		default_unit = unit[0]
+	}
+	g.moveIfPosible(vector{-(default_unit), 0})
 }
 
 func (g *game) SpeedUp() {
@@ -82,7 +114,20 @@ func (g *game) Rotate() {
 	g.block.rotate()
 	// TODO: handle exception rotate will crash on border
 	if g.colision() {
-		g.block.rotateBack()
+		// g.block.rotateBack()
+		ymin, _, xmin, xmax := g.block.ShapeMinMax()
+		switch {
+		case xmax+g.position.x > B_WIDTH-1:
+			fmt.Printf("xmax = %d\n", xmax)
+			g.MoveLeft(xmax + g.position.x - B_WIDTH + 1)
+		case g.position.x+xmin < 0:
+			g.MoveRight(g.position.x - xmin)
+		case g.position.y+ymin < 0:
+			fmt.Printf("ymin = %d\n", ymin)
+			g.MoveDown(g.position.y + ymin + 2)
+		default:
+			g.block.rotateBack()
+		}
 	}
 }
 
@@ -110,6 +155,7 @@ func (g *game) clearLine() {
 			} else if x == B_WIDTH-1 {
 				newBoard := append(clearLine, g.board[:y]...)
 				g.board = append(newBoard, g.board[y+1:]...)
+				g.score += 100
 			}
 		}
 	}
