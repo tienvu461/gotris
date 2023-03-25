@@ -5,15 +5,15 @@ package tetris
 
 import "time"
 
-const B_HEIGHT = 10
-const B_WIDTH = 9
+const B_HEIGHT = 20
+const B_WIDTH = 15
 
 type gameState int
 
 const (
-	gameInit gameState = iota
-	gamePlay
-	gameOver
+	G_INIT gameState = iota
+	G_PLAY
+	G_OVER
 )
 
 type game struct {
@@ -34,7 +34,7 @@ func (g *game) resetFallSpeed() {
 }
 
 func (g *game) Start() {
-	g.state = gamePlay
+	g.state = G_PLAY
 	g.genBlock()
 	g.resetFallSpeed()
 }
@@ -79,8 +79,11 @@ func (g *game) SpeedUp() {
 }
 
 func (g *game) Rotate() {
-	g.block.Rotate()
+	g.block.rotate()
 	// TODO: handle exception rotate will crash on border
+	if g.colision() {
+		g.block.rotateBack()
+	}
 }
 
 func (g *game) Fall() {
@@ -118,7 +121,7 @@ func (g *game) GameLoop() {
 		g.genBlock()
 		if g.colision() {
 			g.FallSpeed.Stop()
-			g.state = gameOver
+			g.state = G_OVER
 			return
 		}
 	}
@@ -131,7 +134,7 @@ func (g *game) blockOnBoardByPosition(v vector) vector {
 	return vector{py, px}
 }
 
-// return current board state
+// return current board
 func (g *game) GetBoard() [][]int {
 	cBoard := make([][]int, len(g.board))
 	for y := 0; y < len(g.board); y++ {
@@ -149,6 +152,10 @@ func (g *game) GetBoard() [][]int {
 	return cBoard
 }
 
+func (g *game) GetState() gameState {
+	return g.state
+}
+
 func (g *game) init() {
 	// initialize 2d array
 	g.board = make([][]int, B_HEIGHT)
@@ -162,7 +169,7 @@ func (g *game) init() {
 	// g.block = blocks[0]
 	g.FallSpeed = time.NewTimer(time.Duration(1000 * time.Second))
 	g.FallSpeed.Stop()
-	g.state = gameInit
+	g.state = G_INIT
 }
 
 func NewGame() *game {

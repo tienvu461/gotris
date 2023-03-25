@@ -32,7 +32,7 @@ func main() {
 	ticker := time.NewTimer(time.Duration(FPS))
 	game := tetris.NewGame()
 	screen := screen.NewScreen()
-	for {
+	for game.GetState() != tetris.G_OVER {
 		select {
 		case ev := <-eventQueue:
 			if ev.Type == termbox.EventKey {
@@ -53,6 +53,8 @@ func main() {
 				case ev.Ch == 's':
 					//start
 					game.Start()
+				default:
+					return
 				}
 			}
 		case <-ticker.C:
