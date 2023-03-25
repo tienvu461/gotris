@@ -1,6 +1,18 @@
 # gotris
 
-tetris written in go
+Tetris written in go
+Can be play on terminal
+
+## How to
+
+To run using golang:
+`go run main.go`
+
+To run using binary:
+`./gotris`
+
+To build binary:
+`make -f build.mk build`
 
 ## Controls:
 
@@ -23,3 +35,9 @@ tetris written in go
 Rotate rule
 
 ![Rotate](rotate-pieces.webp?raw=true 'rotate_rule')
+
+## TODOs:
+
+- [ ] Welcome, gameover, leaderboard, screen
+- [ ] Configurable size, speed
+- [ ] Using WebAssembly to be playable on browsers
